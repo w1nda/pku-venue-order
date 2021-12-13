@@ -10,7 +10,7 @@ class PKUVenue():
 		self.phone = config["phone"]
 		self.sendkey = config["sendkey"]
 		self.orderStatement = []
-		self.browser = Browser()
+		self.browser = Browser(config["browser"])
 
 	def login(self):
 		self.browser.gotoPage("https://epe.pku.edu.cn/ggtypt/login?service=https://epe.pku.edu.cn/venue-server/loginto")
@@ -18,7 +18,7 @@ class PKUVenue():
 		self.browser.typeByCssSelector("#user_name", self.username)
 		self.browser.typeByCssSelector("#password", self.password)
 		self.browser.clickByCssSelector("#logon_button")
-		self.browser.findElementByCssSelector("body > div.fullHeight > div > div > div.isLogin > div > div.loginUser")
+		self.browser.findElementByXPath("/html/body/div[1]/div/div/div[2]/div/div[1]/div/div[2]/div[2]")
 		print("login success !!!!")
 
 	def _reqListToDict(self, reqList):
