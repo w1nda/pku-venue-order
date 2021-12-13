@@ -1,0 +1,19 @@
+{
+    "rushtime": "12:00:00",
+    "user_info": {
+        "username": "",
+        "password": "",
+        "phone": "",
+        "sendkey": "",
+        "browser": {
+            "screenshot" : "",
+            "timeout" : 5
+        }
+    },
+    "order": {
+        "羽毛球": [
+            "20:00-21:00",
+            "19:00-20:00"
+        ]
+    }
+}
