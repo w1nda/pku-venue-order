@@ -1,6 +1,7 @@
 # -*- coding: utf-8
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait as WW
 
 class Browser():
     def __init__(self):
@@ -13,6 +14,7 @@ class Browser():
         while True:
             try:
                 self.browser.find_element_by_xpath(xpath).click()
+                raise 'timeout'
                 return
             except Exception as e:
                 # print(e)
@@ -64,7 +66,6 @@ class Browser():
             except Exception as e:
                 # print(e)
                 pass
-
 
     def gotoPage(self, url):
         print("goto page %s" % url)

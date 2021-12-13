@@ -1,13 +1,14 @@
 # -*- coding: utf-8
 from browser import Browser
 import json, time
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 class PKUVenue():
 	def __init__(self, config):
 		self.username = config["username"]
 		self.password = config["password"]
 		self.phone = config["phone"]
+		self.sendkey = config["sendkey"]
 		self.orderStatement = []
 		self.browser = Browser()
 
@@ -23,8 +24,8 @@ class PKUVenue():
 	def _reqListToDict(self, reqList):
 		reqDict = {}
 		for req in reqList:
-			orderDate = req.split(" ")[0]
-			orderTime = req.split(" ")[1]
+			orderDate = (date.today() + timedelta(days=3)).isoformat()
+			orderTime = req
 			if orderDate in reqDict.keys():
 				reqDict[orderDate].append(orderTime)
 			else:
@@ -50,7 +51,10 @@ class PKUVenue():
 
 		print("submiting order ....... ")
 		self.browser.typeByXPath("/html/body/div[1]/div/div/div[3]/div[2]/div/div[2]/form/div/div[4]/div/div/div/div/input", self.phone)
-		# self.browser.clickByXPath("/html/body/div[1]/div/div/div[3]/div[2]/div/div[2]/div/div/div[2]")
+		self.browser.clickByXPath("/html/body/div[1]/div/div/div[3]/div[2]/div/div[2]/div/div/div[2]")
+
+		print("paying with campus card .......")
+		self.browser.clickByXPath("/html/body/div[1]/div/div/div[3]/div[2]/div/div[3]/div[7]/div[2]/button")
 
 	def __makeOrder(self, sportsName, timeList, courtPriorityList, courtIndexDict, orderDate, orderTimeList):
 		orderEnable = False
@@ -127,7 +131,7 @@ class PKUVenue():
 			"北2" : {"page": 0, "column": 3},
 			"南2" : {"page": 0, "column": 4}
 		}
-		self._order("篮球", "https://epe.pku.edu.cn/venue/pku/venue-reservation/68", timeList, courtList, orderDate, orderTimeList)
+		self._order("篮球", "https://epe.pku.edu.cn/venue/pku/venue-reservation/68", timeList, courtPriorityList, courtIndexDict, orderDate, orderTimeList)
 
 
 	def orderBasketball(self, reqList):
@@ -142,6 +146,12 @@ class PKUVenue():
 			print("| " + "{:^48}".format(self.orderStatement[i]) + " |")
 			print("{:^52}".format(" " + "-" * 50 + " "))
 
+	def sendOrderStatement(self):
+		orderStatement = ""
+		for i in range(0, len(self.orderStatement)):
+			orderStatement +=  "| " + "{:^48}".format(self.orderStatement[i]) + " |" + "\n\n"
+		self.browser.browser.get("https://sctapi.ftqq.com/%s.send?title=场地预定结果&desp=%s"%(self.sendkey, orderStatement))
+
 	def __del__(self):
 		self.browser.close()
 
@@ -153,9 +163,12 @@ def main():
 	pkuvenue.login()
 
 	# waiting until rushtime
+	# now = datetime.now()
+	# rushtime = datetime.strptime(config["rushtime"], "%Y-%m-%d %H:%M:%S")
 	now = datetime.now()
-	rushtime = datetime.strptime(config["rushtime"], "%Y-%m-%d %H:%M:%S")
+	rushtime = datetime.strptime(config["rushtime"], "%H:%M:%S").replace(year=now.year, month=now.month, day=now.day)
 	if (rushtime - now).total_seconds() > 0:
+		print("before rush time: %s"%(rushtime - now).total_seconds())
 		time.sleep((rushtime - now).total_seconds())
 
 	for k in config["order"].keys():
@@ -165,6 +178,7 @@ def main():
 			pkuvenue.orderBasketball(config["order"][k])
 
 	pkuvenue.outputOrderStatement()
+	pkuvenue.sendOrderStatement()
 
 	del pkuvenue
 
