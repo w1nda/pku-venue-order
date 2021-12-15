@@ -71,7 +71,7 @@ class PKUVenue():
 				pageDelta = courtPageIndex - currentPageIndex
 				jumpDirection = 1 if pageDelta > 0 else -1
 				for _ in range(0, pageDelta, jumpDirection):
-					self.browser.clickByXPath("/html/body/div[1]/div/div/div[3]/div[2]/div/div[2]/div[3]/div[1]/div/div/div/div/div/table/thead/tr/td[%d]/div/span/i" % pageJumpButtonIndex[jumpDirection])
+					self.browser.clickByXPath("/html/body/div[1]/div/div/div[3]/div[2]/div/div[2]/div[3]/div[1]/div/div/div/div/div/table/tbody/tr[15]/td[%d]/div/span/i" % pageJumpButtonIndex[jumpDirection])
 					currentPageIndex += jumpDirection
 				# select court block
 				courtBlockElment = self.browser.findElementByXPath("/html/body/div[1]/div/div/div[3]/div[2]/div/div[2]/div[3]/div[1]/div/div/div/div/div/table/tbody/tr[%d]/td[%d]/div" % (timeTableRow, courtTableColumn+1))

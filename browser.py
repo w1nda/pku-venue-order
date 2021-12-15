@@ -18,8 +18,10 @@ class Browser():
     def clickByXPath(self, xpath):
         try:
             locator = (By.XPATH, xpath)
-            WW(self.browser, self.timeout).until(EC.visibility_of_element_located(locator))
-            self.browser.find_element_by_xpath(xpath).click()
+            WW(self.browser, self.timeout).until(EC.presence_of_element_located(locator))
+            ele = self.browser.find_element_by_xpath(xpath)
+            self.browser.execute_script("arguments[0].click();", ele)
+            # self.browser.find_element_by_xpath(xpath).click()
         except Exception as e:
             self.saveScreenshot()
             print(xpath)
@@ -28,8 +30,10 @@ class Browser():
     def clickByCssSelector(self, cssSelector):
         try:
             locator = (By.CSS_SELECTOR, cssSelector)
-            WW(self.browser, self.timeout).until(EC.visibility_of_element_located(locator))
-            self.browser.find_element_by_css_selector(cssSelector).click()
+            WW(self.browser, self.timeout).until(EC.presence_of_element_located(locator))
+            ele = self.browser.find_element_by_css_selector(cssSelector)
+            self.browser.execute_script("arguments[0].click();", ele)
+            # self.browser.find_element_by_css_selector(cssSelector).click()
         except Exception as e:
             print(cssSelector)
             self.saveScreenshot()
@@ -38,7 +42,7 @@ class Browser():
     def typeByCssSelector(self, cssSelector, text):
         try:
             locator = (By.CSS_SELECTOR, cssSelector)
-            WW(self.browser, self.timeout).until(EC.visibility_of_element_located(locator))
+            WW(self.browser, self.timeout).until(EC.presence_of_element_located(locator))
             self.browser.find_element_by_css_selector(cssSelector).clear()
             self.browser.find_element_by_css_selector(cssSelector).send_keys(text)
         except Exception as e:
@@ -49,7 +53,7 @@ class Browser():
     def typeByXPath(self, xpath, text):
         try:
             locator = (By.XPATH, xpath)
-            WW(self.browser, self.timeout).until(EC.visibility_of_element_located(locator))
+            WW(self.browser, self.timeout).until(EC.presence_of_element_located(locator))
             self.browser.find_element_by_xpath(xpath).clear()
             self.browser.find_element_by_xpath(xpath).send_keys(text)
         except Exception as e:
